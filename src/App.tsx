@@ -479,14 +479,14 @@ function App() {
             personas y se sientan autenticos dentro y fuera de internet.
           </p>
           <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
-            <a className="btn btn-primary" href="mailto:marygcubillos@gmail.com">
+            <a className="btn btn-primary" href="mailto:mary@marygutierrez.cl">
               Hablemos
               <ArrowUpRight size={16} />
             </a>
             <a className="btn btn-secondary" href="#portfolio">
               Ver portfolio
             </a>
-            <a className="btn btn-ghost" href="mailto:marygcubillos@gmail.com">
+            <a className="btn btn-ghost" href="mailto:mary@marygutierrez.cl">
               Contacto
             </a>
           </div>

@@ -166,6 +166,66 @@ function BrandLogo({ domain, brand }: { domain: string; brand: string }) {
   );
 }
 
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwjlCAnabfI2xw-GuCoDCg32MicDxRUVHufDWh8WtnoKDdPw1fjZhzHayOV90EPuQZX/exec';
+
+function ContactForm() {
+  const [form, setForm] = useState({ nombre: '', email: '', servicio: '', mensaje: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('loading');
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      setStatus('success');
+      setForm({ nombre: '', email: '', servicio: '', mensaje: '' });
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  const inputClass = 'w-full rounded-xl border border-ink/15 bg-cream/60 px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-mauve focus:outline-none focus:ring-2 focus:ring-mauve/20 transition-all';
+
+  return (
+    <form onSubmit={handleSubmit} className="mx-auto mt-12 max-w-2xl space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <input name="nombre" value={form.nombre} onChange={handleChange} required placeholder="Tu nombre" className={inputClass} />
+        <input name="email" type="email" value={form.email} onChange={handleChange} required placeholder="Tu email" className={inputClass} />
+      </div>
+      <select name="servicio" value={form.servicio} onChange={handleChange} required className={inputClass}>
+        <option value="" disabled>¿En qué puedo ayudarte?</option>
+        <option>Estrategia & Posicionamiento</option>
+        <option>Dirección Creativa</option>
+        <option>Paid Media & Performance</option>
+        <option>Consultoría</option>
+        <option>Contenido & UGC</option>
+        <option>Otro</option>
+      </select>
+      <textarea name="mensaje" value={form.mensaje} onChange={handleChange} required placeholder="Cuéntame sobre tu proyecto..." rows={4} className={inputClass + ' resize-none'} />
+      <div className="pt-2 text-center">
+        {status === 'success' ? (
+          <p className="font-serif text-lg italic text-ink/70">Mensaje enviado, te escribo pronto.</p>
+        ) : (
+          <button type="submit" disabled={status === 'loading'} className="btn btn-primary mx-auto">
+            {status === 'loading' ? 'Enviando...' : 'Enviar cotización'}
+            {status !== 'loading' && <ArrowUpRight size={16} />}
+          </button>
+        )}
+        {status === 'error' && <p className="mt-3 text-sm text-red-500">Algo salió mal, intenta de nuevo.</p>}
+      </div>
+    </form>
+  );
+}
+
 function App() {
   return (
     <main className="min-h-screen overflow-hidden bg-cream text-ink">
@@ -469,27 +529,18 @@ function App() {
       </section>
 
       <section className="px-5 py-14 sm:py-16" id="contact">
-        <Reveal className="mx-auto max-w-5xl rounded-[2.25rem] bg-[linear-gradient(135deg,rgba(232,213,183,0.88),rgba(242,194,206,0.44),rgba(255,249,225,0.9))] p-8 text-center shadow-editorial sm:p-14 lg:p-20">
-          <h2 className="font-serif text-6xl font-medium leading-[0.95] text-ink sm:text-7xl">
-            Construyamos algo juntos.
-          </h2>
-          <p className="mx-auto mt-8 max-w-3xl text-base leading-8 text-ink/70 sm:text-lg">
-            Ya sea una campaña, una estrategia, contenido o una presencia digital
-            completa, me interesa crear proyectos que conecten de forma real con las
-            personas y se sientan autenticos dentro y fuera de internet.
-          </p>
-          <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
-            <a className="btn btn-primary" href="mailto:mary@marygutierrez.cl">
-              Hablemos
-              <ArrowUpRight size={16} />
-            </a>
-            <a className="btn btn-secondary" href="#portfolio">
-              Ver portfolio
-            </a>
-            <a className="btn btn-ghost" href="mailto:mary@marygutierrez.cl">
-              Contacto
-            </a>
+        <Reveal className="mx-auto max-w-5xl rounded-[2.25rem] bg-[linear-gradient(135deg,rgba(232,213,183,0.88),rgba(242,194,206,0.44),rgba(255,249,225,0.9))] p-8 shadow-editorial sm:p-14 lg:p-20">
+          <div className="text-center">
+            <h2 className="font-serif text-6xl font-medium leading-[0.95] text-ink sm:text-7xl">
+              Construyamos algo juntos.
+            </h2>
+            <p className="mx-auto mt-8 max-w-3xl text-base leading-8 text-ink/70 sm:text-lg">
+              Ya sea una campaña, una estrategia, contenido o una presencia digital
+              completa, me interesa crear proyectos que conecten de forma real con las
+              personas y se sientan auténticos dentro y fuera de internet.
+            </p>
           </div>
+          <ContactForm />
         </Reveal>
       </section>
 

@@ -1,0 +1,5 @@
+node_modules/
+node-v20.18.1-darwin-arm64/
+dist/
+.DS_Store
+*.local

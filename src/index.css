@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #3b3128;
+  background: #fff9e1;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Manrope', sans-serif;
+  letter-spacing: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #fff9e1;
+  overflow-x: hidden;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: rgba(212, 165, 176, 0.55);
+  color: #3b3128;
+}
+
+.font-serif,
+.font-serif * {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.noise-overlay::after,
+.bg-noise::before {
+  pointer-events: none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 320 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23n)' opacity='0.38'/%3E%3C/svg%3E");
+}
+
+.bg-noise {
+  position: relative;
+}
+
+.bg-noise::before {
+  opacity: 0.07;
+  mix-blend-mode: multiply;
+}
+
+.btn {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1;
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px) scale(1.01);
+}
+
+.btn-primary {
+  background: #c4a882;
+  color: #3b3128;
+  box-shadow: 0 16px 32px rgba(59, 49, 40, 0.18);
+}
+
+.btn-primary:hover {
+  background: #d4b890;
+  box-shadow: 0 20px 44px rgba(59, 49, 40, 0.22);
+}
+
+.btn-secondary,
+.btn-secondary-light {
+  border: 1px solid rgba(59, 49, 40, 0.2);
+  background: rgba(255, 249, 225, 0.46);
+  color: #3b3128;
+}
+
+.btn-secondary:hover {
+  background: rgba(232, 213, 183, 0.72);
+}
+
+.btn-secondary-light {
+  border-color: rgba(255, 249, 225, 0.45);
+  color: #fff9e1;
+}
+
+.btn-secondary-light:hover {
+  background: rgba(255, 249, 225, 0.18);
+}
+
+.btn-ghost,
+.btn-ghost-light {
+  border: 1px solid transparent;
+  color: #3b3128;
+}
+
+.btn-ghost:hover {
+  border-color: rgba(59, 49, 40, 0.16);
+  background: rgba(255, 249, 225, 0.4);
+}
+
+.btn-ghost-light {
+  color: #fff9e1;
+}
+
+.btn-ghost-light:hover {
+  border-color: rgba(255, 249, 225, 0.34);
+  background: rgba(255, 249, 225, 0.12);
+}
+
+.hero-copy-card {
+  width: min(100%, calc(100vw - 3.5rem));
+}
+
+.marquee {
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+
+@media (max-width: 639px) {
+  .hero-copy-card {
+    width: 82vw;
+    max-width: 330px;
+  }
+
+  .hero-copy-card .btn {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-copy-card {
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

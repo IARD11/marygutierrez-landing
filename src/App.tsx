@@ -67,6 +67,8 @@ const portfolioItems = [
   { brand: 'Nevermind', type: 'UGC · Creadora', domain: 'nevermind.cl' },
   { brand: 'Hairline', type: 'UGC · Creadora', domain: 'hairline.cl' },
   { brand: 'Youth Beauty', type: 'Campaña · Marca personal', domain: 'youthbeauty.cl' },
+  { brand: 'Warner Music Chile', type: 'Marketing · Strategy · Influencer Marketing', domain: 'warnermusic.com' },
+  { brand: 'Estée Lauder Companies', type: 'Paid Media', domain: 'elcompanies.com' },
 ];
 
 

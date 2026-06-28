@@ -9,6 +9,7 @@ import {
   NotebookPen,
   PenLine,
   Sparkles,
+  Star,
 } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -223,6 +224,75 @@ function ContactForm() {
           </button>
         )}
         {status === 'error' && <p className="mt-3 text-sm text-red-500">Algo salió mal, intenta de nuevo.</p>}
+      </div>
+    </form>
+  );
+}
+
+function ReviewForm() {
+  const [form, setForm] = useState({ nombre: '', resena: '' });
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (rating === 0) return;
+    setStatus('loading');
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tipo: 'reseña', calificacion: rating, ...form }),
+      });
+      setStatus('success');
+      setForm({ nombre: '', resena: '' });
+      setRating(0);
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  const inputClass = 'w-full rounded-xl border border-ink/15 bg-cream/60 px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-mauve focus:outline-none focus:ring-2 focus:ring-mauve/20 transition-all';
+
+  return (
+    <form onSubmit={handleSubmit} className="mx-auto mt-12 max-w-2xl space-y-4">
+      <input name="nombre" value={form.nombre} onChange={handleChange} required placeholder="Tu nombre" className={inputClass} />
+      <div className="flex items-center justify-center gap-2 py-2">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            type="button"
+            onClick={() => setRating(star)}
+            onMouseEnter={() => setHoverRating(star)}
+            onMouseLeave={() => setHoverRating(0)}
+            aria-label={`${star} estrellas`}
+          >
+            <Star
+              size={28}
+              strokeWidth={1.6}
+              className={(hoverRating || rating) >= star ? 'fill-camel text-camel' : 'text-ink/20'}
+            />
+          </button>
+        ))}
+      </div>
+      <textarea name="resena" value={form.resena} onChange={handleChange} required placeholder="Cuéntame cómo fue tu experiencia..." rows={4} className={inputClass + ' resize-none'} />
+      <div className="pt-2 text-center">
+        {status === 'success' ? (
+          <p className="font-serif text-lg italic text-ink/70">Gracias por tu reseña.</p>
+        ) : (
+          <button type="submit" disabled={status === 'loading'} className="btn btn-primary mx-auto">
+            {status === 'loading' ? 'Enviando...' : 'Enviar reseña'}
+            {status !== 'loading' && <ArrowUpRight size={16} />}
+          </button>
+        )}
+        {status === 'error' && <p className="mt-3 text-sm text-red-500">Algo salió mal, intenta de nuevo.</p>}
+        {rating === 0 && status === 'idle' && <p className="mt-2 text-xs text-ink/40">Selecciona una calificación</p>}
       </div>
     </form>
   );
@@ -527,6 +597,16 @@ function App() {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-14 sm:py-16" id="reviews">
+        <div className="mx-auto max-w-5xl">
+          <SectionHeading
+            title="Tu opinión importa"
+            copy="¿Trabajaste conmigo? Cuéntame cómo fue la experiencia, tu reseña ayuda a que más personas confíen en este trabajo."
+          />
+          <ReviewForm />
         </div>
       </section>
 

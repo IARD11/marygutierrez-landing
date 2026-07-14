@@ -188,17 +188,12 @@ function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
-    try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
+    const { error } = await supabase.from('contacto').insert(form);
+    if (error) {
+      setStatus('error');
+    } else {
       setStatus('success');
       setForm({ nombre: '', email: '', servicio: '', mensaje: '' });
-    } catch {
-      setStatus('error');
     }
   };
 

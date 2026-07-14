@@ -310,7 +310,6 @@ function ReviewsDisplay() {
     supabase
       .from('resenas')
       .select('*')
-      .eq('aprobada', true)
       .order('created_at', { ascending: false })
       .then(({ data }) => { if (data) setResenas(data); });
   }, []);

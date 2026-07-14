@@ -11,10 +11,16 @@ import {
   Sparkles,
   Star,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { createClient } from '@supabase/supabase-js';
 import heroImage from './assets/hero-mary.jpg';
 import workspaceImage from './assets/editorial-workspace.jpg';
+
+const supabase = createClient(
+  'https://jgpuehinlevrgvjnqyra.supabase.co',
+  'sb_publishable_WzuJnK0Q6W-WvaUp-Co2UQ_-IdriL0x'
+);
 
 const navItems = [
   { label: 'About', href: '#about' },
@@ -243,18 +249,15 @@ function ReviewForm() {
     e.preventDefault();
     if (rating === 0) return;
     setStatus('loading');
-    try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tipo: 'reseña', calificacion: rating, ...form }),
-      });
+    const { error } = await supabase
+      .from('resenas')
+      .insert({ nombre: form.nombre, resena: form.resena, calificacion: rating });
+    if (error) {
+      setStatus('error');
+    } else {
       setStatus('success');
       setForm({ nombre: '', resena: '' });
       setRating(0);
-    } catch {
-      setStatus('error');
     }
   };
 
@@ -295,6 +298,41 @@ function ReviewForm() {
         {rating === 0 && status === 'idle' && <p className="mt-2 text-xs text-ink/40">Selecciona una calificación</p>}
       </div>
     </form>
+  );
+}
+
+type Resena = { id: string; nombre: string; calificacion: number; resena: string; created_at: string };
+
+function ReviewsDisplay() {
+  const [resenas, setResenas] = useState<Resena[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from('resenas')
+      .select('*')
+      .eq('aprobada', true)
+      .order('created_at', { ascending: false })
+      .then(({ data }) => { if (data) setResenas(data); });
+  }, []);
+
+  if (resenas.length === 0) return null;
+
+  return (
+    <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {resenas.map((r) => (
+        <Reveal key={r.id}>
+          <div className="rounded-2xl border border-ink/10 bg-[linear-gradient(135deg,rgba(255,249,225,0.96),rgba(242,194,206,0.34))] p-6">
+            <div className="flex gap-1 mb-3">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <Star key={s} size={14} strokeWidth={1.6} className={r.calificacion >= s ? 'fill-camel text-camel' : 'text-ink/20'} />
+              ))}
+            </div>
+            <p className="text-sm leading-7 text-ink/70 italic">"{r.resena}"</p>
+            <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-mauve">{r.nombre}</p>
+          </div>
+        </Reveal>
+      ))}
+    </div>
   );
 }
 
@@ -606,6 +644,7 @@ function App() {
             title="Tu opinión importa"
             copy="¿Trabajaste conmigo? Cuéntame cómo fue la experiencia, tu reseña ayuda a que más personas confíen en este trabajo."
           />
+          <ReviewsDisplay />
           <ReviewForm />
         </div>
       </section>
